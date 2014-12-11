@@ -5,44 +5,12 @@
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
       <title>OIS dn4</title>
       <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
-      <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
       <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
       <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
       <script src="page.js"></script>
-      <style>
-        body {padding: 10px;}
-        .btn {margin-top: 10px;}
-        .obvestilo {margin-left:10px;}
-      </style>
-      <style>
-			/* tell the SVG path to be a thin blue line without any area fill */
-			path {
-				stroke: steelblue;
-				stroke-width: 3;
-				fill: none;
-			}
-			
-			.axis {
-			  shape-rendering: crispEdges;
-			}
 
-			.x.axis line {
-			  stroke: lightgrey;
-			}
-
-			.x.axis .minor {
-			  stroke-opacity: .5;
-			}
-
-			.x.axis path {
-			  display: none;
-			}
-
-			.y.axis line, .y.axis path {
-			  fill: none;
-			  stroke: #000;
-			}
-		</style>
+      <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
+      <link href="style.css" rel="stylesheet">
   </head>
   <body onload="preberiEHRodBolnika(); drawGraph();">
   	<span id="name"></span>
