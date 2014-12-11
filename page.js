@@ -182,11 +182,18 @@ function preberiMeritveVitalnihZnakov(id){
 				    	if (res.length > 0) {
 					        for (var i in res) {
 					        	if(tip == 'body_temperature'){
+					        		res[i].temperature < 35 ? redFlag('body_temperature_low') : null
+					        		res[i].temperature > 38.9 ? redFlag('body_temperature_high') : null
 					        		result.push(res[i].temperature);	
-					        	} else if (tip == 'weight'){
-					        		result.push(res[i].weight);
-					        	} else if (tip == 'height'){
-					        		result.push(res[i].height);
+					        	} else if (tip == 'spO2'){
+					        		res[i].spO2 < 91 ? redFlag('spO2') : null
+					        		result.push(res[i].spO2);
+					        	} else if (tip == 'blood_pressure'){
+					        		res[i].systolic < 85 ? redFlag('blood_pressure') : null
+					        		result.push(res[i].systolic);
+					        	}  else if (tip == 'pulse'){
+					        		res[i].pulse > 120 ? redFlag('pulse') : null
+					        		result.push(res[i].pulse);
 					        	} 
 						    }
 						    console.log(tip +" -- "+result);
@@ -259,6 +266,27 @@ function dataMin(val){
 	return Math.min.apply(Math, val);
 }
 
+function redFlag(problem){
+	var message = $("#alert").val();
+	if (problem == 'blood_pressure') {
+		message += "Blood pressure is lower than 85mmHg";
+	}
+	if (problem == 'pulse') {
+		message += "Hart rate is higher than 120bpm ";
+	}
+	if (problem == 'body_temperature_high') {
+		message += "Body temperature is higher than 38.9◦C";
+	}
+	if (problem == 'body_temperature_low') {
+		message += "Body temperature is lower than 35◦C";
+	}
+	if (problem == 'spO2') {
+		message += "Oxygen saturation is lower than 91%";
+	}
+
+	$("#alert").append(message+', please visit hospital.<br>')
+}
+
 $(document).ready(function() {
 	preberiEHRodBolnika();
 	$('#preberiObstojeciEHR').change(function() {
@@ -291,6 +319,7 @@ $(document).ready(function() {
 		$("#meritveVitalnihZnakovEHRid").val($(this).val());
 	});
 	drawGraph('body_temperature');
-	drawGraph('weight');
-	drawGraph('height');
+	drawGraph('spO2');
+	drawGraph('blood_pressure');
+	drawGraph('pulse');
 });
