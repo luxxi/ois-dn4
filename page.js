@@ -163,241 +163,104 @@ function dodajMeritveVitalnihZnakov() {
 	}
 }
 
-
-function preberiMeritveVitalnihZnakov() {
-	sessionId = getSessionId();	
-
-	//var ehrId = $("#meritveVitalnihZnakovEHRid").val();
-	var ehrId = getUrlParameter('ehrid');
-	//var tip = $("#preberiTipZaVitalneZnake").val();
-	var tip = 'telesna temperatura';
-
-	if (!ehrId || ehrId.trim().length == 0 || !tip || tip.trim().length == 0) {
-		$("#preberiMeritveVitalnihZnakovSporocilo").html("<span class='obvestilo label label-warning fade-in'>Prosim vnesite zahtevan podatek!");
-	} else {
-		$.ajax({
-			url: baseUrl + "/demographics/ehr/" + ehrId + "/party",
-	    	type: 'GET',
-	    	headers: {"Ehr-Session": sessionId},
-	    	success: function (data) {
-				var party = data.party;
-				$("#rezultatMeritveVitalnihZnakov").html("<br/><span>Pridobivanje podatkov za <b>'" + tip + "'</b> bolnika <b>'" + party.firstNames + " " + party.lastNames + "'</b>.</span><br/><br/>");
-				if (tip == "telesna temperatura") {
-					$.ajax({
-					    url: baseUrl + "/view/" + ehrId + "/" + "body_temperature",
-					    type: 'GET',
-					    headers: {"Ehr-Session": sessionId},
-					    success: function (res) {
-					    	if (res.length > 0) {
-						    	var results = "<table class='table table-striped table-hover'><tr><th>Datum in ura</th><th class='text-right'>Telesna temperatura</th></tr>";
-						        for (var i in res) {
-						            results += "<tr><td>" + res[i].time + "</td><td class='text-right'>" + res[i].temperature + " " 	+ res[i].unit + "</td>";
-						        }
-						        results += "</table>";
-						        $("#rezultatMeritveVitalnihZnakov").append(results);
-					    	} else {
-					    		$("#preberiMeritveVitalnihZnakovSporocilo").html("<span class='obvestilo label label-warning fade-in'>Ni podatkov!</span>");
-					    	}
-					    },
-					    error: function() {
-					    	$("#preberiMeritveVitalnihZnakovSporocilo").html("<span class='obvestilo label label-danger fade-in'>Napaka '" + JSON.parse(err.responseText).userMessage + "'!");
-							console.log(JSON.parse(err.responseText).userMessage);
-					    }
-					});
-				} else if (tip == "telesna teža") {
-					$.ajax({
-					    url: baseUrl + "/view/" + ehrId + "/" + "weight",
-					    type: 'GET',
-					    headers: {"Ehr-Session": sessionId},
-					    success: function (res) {
-					    	if (res.length > 0) {
-						    	var results = "<table class='table table-striped table-hover'><tr><th>Datum in ura</th><th class='text-right'>Telesna teža</th></tr>";
-						        for (var i in res) {
-						            results += "<tr><td>" + res[i].time + "</td><td class='text-right'>" + res[i].weight + " " 	+ res[i].unit + "</td>";
-						        }
-						        results += "</table>";
-						        $("#rezultatMeritveVitalnihZnakov").append(results);
-					    	} else {
-					    		$("#preberiMeritveVitalnihZnakovSporocilo").html("<span class='obvestilo label label-warning fade-in'>Ni podatkov!</span>");
-					    	}
-					    },
-					    error: function() {
-					    	$("#preberiMeritveVitalnihZnakovSporocilo").html("<span class='obvestilo label label-danger fade-in'>Napaka '" + JSON.parse(err.responseText).userMessage + "'!");
-							console.log(JSON.parse(err.responseText).userMessage);
-					    }
-					});					
-				} else if (tip == "telesna temperatura AQL") {
-					var AQL = 
-						"select " +
-    						"t/data[at0002]/events[at0003]/time/value as cas, " +
-    						"t/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value/magnitude as temperatura_vrednost, " +
-    						"t/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value/units as temperatura_enota " +
-						"from EHR e[e/ehr_id/value='" + ehrId + "'] " +
-						"contains OBSERVATION t[openEHR-EHR-OBSERVATION.body_temperature.v1] " +
-						"where t/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value/magnitude<35 " +
-						"order by t/data[at0002]/events[at0003]/time/value desc " +
-						"limit 10";
-					$.ajax({
-					    url: baseUrl + "/query?" + $.param({"aql": AQL}),
-					    type: 'GET',
-					    headers: {"Ehr-Session": sessionId},
-					    success: function (res) {
-					    	var results = "<table class='table table-striped table-hover'><tr><th>Datum in ura</th><th class='text-right'>Telesna temperatura</th></tr>";
-					    	if (res) {
-					    		var rows = res.resultSet;
-						        for (var i in rows) {
-						            results += "<tr><td>" + rows[i].cas + "</td><td class='text-right'>" + rows[i].temperatura_vrednost + " " 	+ rows[i].temperatura_enota + "</td>";
-						        }
-						        results += "</table>";
-						        $("#rezultatMeritveVitalnihZnakov").append(results);
-					    	} else {
-					    		$("#preberiMeritveVitalnihZnakovSporocilo").html("<span class='obvestilo label label-warning fade-in'>Ni podatkov!</span>");
-					    	}
-
-					    },
-					    error: function() {
-					    	$("#preberiMeritveVitalnihZnakovSporocilo").html("<span class='obvestilo label label-danger fade-in'>Napaka '" + JSON.parse(err.responseText).userMessage + "'!");
-							console.log(JSON.parse(err.responseText).userMessage);
-					    }
-					});
-				}
-	    	},
-	    	error: function(err) {
-	    		$("#preberiMeritveVitalnihZnakovSporocilo").html("<span class='obvestilo label label-danger fade-in'>Napaka '" + JSON.parse(err.responseText).userMessage + "'!");
-				console.log(JSON.parse(err.responseText).userMessage);
-	    	}
-		});
-	}
-}
-
-function preberiMeritveVitalnihZnakov3(){ 
-  	console.log('Promise found');
- 
+function preberiMeritveVitalnihZnakov(id){ 
 	  return new Promise(function(resolve, reject) {
-	  	
 	  		sessionId = getSessionId();	
 
 			var ehrId = getUrlParameter('ehrid');
-			var tip = 'telesna temperatura';
 			var result = [];
+			var tip = id;
 
 			if (!ehrId || ehrId.trim().length == 0) {
 				$("#preberiMeritveVitalnihZnakovSporocilo").html("<span class='obvestilo label label-warning fade-in'>Prosim vnesite zahtevan podatek!");
 			} else {
 				$.ajax({
-				    url: baseUrl + "/view/" + ehrId + "/" + "body_temperature",
+				    url: baseUrl + "/view/" + ehrId + "/" + tip,
 				    type: 'GET',
 				    headers: {"Ehr-Session": sessionId},
 				    success: function (res) {
 				    	if (res.length > 0) {
 					        for (var i in res) {
-						    	result.push(res[i].temperature);
+					        	if(tip == 'body_temperature'){
+					        		result.push(res[i].temperature);	
+					        	} else if (tip == 'weight'){
+					        		result.push(res[i].weight);
+					        	} else if (tip == 'height'){
+					        		result.push(res[i].height);
+					        	} 
 						    }
-						    console.log(result.length);
-						    console.log(result);
-						    resolve(result);
-					        
+						    console.log(tip +" -- "+result);
+						    resolve(result); 
 				    	} else {
-				    		$("#preberiMeritveVitalnihZnakovSporocilo").html("<span class='obvestilo label label-warning fade-in'>Ni podatkov!</span>");
 				    		console.log('Ni podatkov!');
 				    	}
 				    },
 				    error: function() {
-				    	$("#preberiMeritveVitalnihZnakovSporocilo").html("<span class='obvestilo label label-danger fade-in'>Napaka '" + JSON.parse(err.responseText).userMessage + "'!");
 						console.log(JSON.parse(err.responseText).userMessage);
-						reject(Error('napaka'));
+						reject(Error([0,0]));
 				    }
 				});
 			}
-
-	  	
-	  	
 	  });
 }	 
 
+function drawGraph(id){
+	/* http://bl.ocks.org/1166403 */		
+	preberiMeritveVitalnihZnakov(id).then(function(val) {
+		var data = val;
 
-function drawGraph(){
-	/* implementation heavily influenced by http://bl.ocks.org/1166403 */
-
-		
-		preberiMeritveVitalnihZnakov3().then(function(val) {
-	    console.log('Got data! Promise fulfilled.');
-	    console.log(val);
-	    var data = val;
-	  
+		var yMin = dataMin(val);
+		var yMax = dataMax(val) + 5;
 
 		var m = [80, 80, 80, 80]; // margins
-		var w = 1000 - m[1] - m[3]; // width
-		var h = 400 - m[0] - m[2]; // height
-		
-		// create a simple data array that we'll plot with a line (this array represents only the Y values, X will just be the index location)
-		//var data = [3, 6, 2, 7, 5, 2, 0, 3, 8, 9, 2, 5, 9, 3, 6, 3, 6, 2, 7, 5, 2, 1, 3, 8, 9, 2, 5, 9, 2, 7];
-		//var data = [30, 37, 36.5, 35, 36.5, 36, 36, 36, 36, 36];
-		//var data = preberiMeritveVitalnihZnakov2();
+		var w = 500 - m[1] - m[3]; // width
+		var h = 300 - m[0] - m[2]; // height
 
-		// X scale will fit all values from data[] within pixels 0-w
 		var x = d3.scale.linear().domain([0, data.length-1]).range([0, w]);
-		// Y scale will fit values from 0-10 within pixels h-0 (Note the inverted domain for the y-scale: bigger is up!)
-		var y = d3.scale.linear().domain([20, 40]).range([h, 0]);
-			// automatically determining max range can work something like this
-		 //var y = d3.scale.linear().domain([0, d3.max(data)]).range([h, 0]);
-
-		// create a line function that can convert data[] into x and y points
+		var y = d3.scale.linear().domain([yMin, yMax]).range([h, 0]);
 		var line = d3.svg.line()
-			// assign the X function to plot our line as we wish
 			.x(function(d,i) { 
-				// verbose logging to show what's actually being done
-				console.log('Plotting X value for data point: ' + d + ' using index: ' + i + ' to be at: ' + x(i) + ' using our xScale.');
-				// return the X coordinate where we want to plot this datapoint
 				return x(i); 
 			})
 			.y(function(d) { 
-				// verbose logging to show what's actually being done
-				console.log('Plotting Y value for data point: ' + d + ' to be at: ' + y(d) + " using our yScale.");
-				// return the Y coordinate where we want to plot this datapoint
 				return y(d); 
 			})
 
-			// Add an SVG element with the desired dimensions and margin.
-			var graph = d3.select("#graph").append("svg:svg")
-			      .attr("width", w + m[1] + m[3])
-			      .attr("height", h + m[0] + m[2])
-			    .append("svg:g")
-			      .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+		var graph = d3.select("#"+id).append("svg:svg")
+		      .attr("width", w + m[1] + m[3])
+		      .attr("height", h + m[0] + m[2])
+		    .append("svg:g")
+		      .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
 
-			// create yAxis
-			var xAxis = d3.svg.axis().scale(x).tickSize(-h).tickSubdivide(true);
-			// Add the x-axis.
-			graph.append("svg:g")
-			      .attr("class", "x axis")
-			      .attr("transform", "translate(0," + h + ")")
-			      .call(xAxis);
+		var xAxis = d3.svg.axis().scale(x).tickSize(-h).tickSubdivide(true);
+		graph.append("svg:g")
+		      .attr("class", "x axis")
+		      .attr("transform", "translate(0," + h + ")")
+		      .call(xAxis);
 
 
-			// create left yAxis
-			var yAxisLeft = d3.svg.axis().scale(y).ticks(4).orient("left");
-			// Add the y-axis to the left
-			graph.append("svg:g")
-			      .attr("class", "y axis")
-			      .attr("transform", "translate(-25,0)")
-			      .call(yAxisLeft);
-			
-  			// Add the line by appending an svg:path element with the data line we created above
-			// do this AFTER the axes above so that the line is above the tick-lines
-  			graph.append("svg:path").attr("d", line(data));
-
-
-
-	  }, function(error) {
-	    console.log('Promise rejected.');
-	    console.log(error.message);
-	  });
+		var yAxisLeft = d3.svg.axis().scale(y).ticks(4).orient("left");
+		graph.append("svg:g")
+		      .attr("class", "y axis")
+		      .attr("transform", "translate(-25,0)")
+		      .call(yAxisLeft);
 		
-		
+		graph.append("svg:path").attr("d", line(data));
+
+	}, function(error) {
+		console.log(error.message);
+	});
 }
 
+function dataMax(val){
+	return Math.max.apply(Math, val);
+}
+function dataMin(val){
+	return Math.min.apply(Math, val);
+}
 
 $(document).ready(function() {
+	preberiEHRodBolnika();
 	$('#preberiObstojeciEHR').change(function() {
 		$("#preberiSporocilo").html("");
 		$("#preberiEHRid").val($(this).val());
@@ -427,4 +290,7 @@ $(document).ready(function() {
 		$("#rezultatMeritveVitalnihZnakov").html("");
 		$("#meritveVitalnihZnakovEHRid").val($(this).val());
 	});
+	drawGraph('body_temperature');
+	drawGraph('weight');
+	drawGraph('height');
 });

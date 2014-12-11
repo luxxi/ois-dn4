@@ -12,20 +12,27 @@
       <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
       <link href="style.css" rel="stylesheet">
   </head>
-  <body onload="preberiEHRodBolnika(); drawGraph();">
+  <body>
   	<span id="name"></span>
   	<span id="age"></span>
 
  <span id="preberiMeritveVitalnihZnakovSporocilo"></span>
 						<div id="rezultatMeritveVitalnihZnakov"></div>
 
-  
+ <div style="border:solid 1px green; float:left;"> 
+<div>Telesna temeratura</div>
+<div id="body_temperature" class="aGraph"></div>
+</div>
 
+<div style="border:solid 1px red; float:right;">
+<div>Telesna teža</div>
+<div id="weight" class="aGraph"></div>
+</div>
 
-
-<div id="graph" class="aGraph" style="position:absolute;top:0px;left:0; float:left;"></div>
-
-
+<div style="border:solid 1px red; float:left;">
+<div>Telesna višina</div>
+<div id="height" class="aGraph"></div>
+</div>
 
 
   </body>
