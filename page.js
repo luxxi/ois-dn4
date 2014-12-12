@@ -283,8 +283,37 @@ function redFlag(problem){
 	if (problem == 'spO2') {
 		message += "Oxygen saturation is lower than 91%";
 	}
+	getLocation();
 
 	$("#alert").append(message+', please visit hospital.<br>')
+}
+
+function showLocationError(error) {
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            console.log("User denied the request for Geolocation.");
+            break;
+        case error.POSITION_UNAVAILABLE:
+            console.log("Location information is unavailable.");
+            break;
+        case error.TIMEOUT:
+            console.log("The request to get user location timed out.");
+            break;
+        case error.UNKNOWN_ERROR:
+            console.log("An unknown error occurred.");
+            break;
+    }
+}
+function getLocation() {
+    if (navigator.geolocation) {
+    	navigator.geolocation.getCurrentPosition(getNearestHospital, showLocationError);
+    } else {
+        console.log("Geolocation is not supported by this browser.");
+    }
+}
+function getNearestHospital(position) {
+    console.log("Latitude: " + position.coords.latitude + 
+    "<br>Longitude: " + position.coords.longitude);	
 }
 
 $(document).ready(function() {
