@@ -313,7 +313,23 @@ function getLocation() {
 }
 function getNearestHospital(position) {
     console.log("Latitude: " + position.coords.latitude + 
-    "<br>Longitude: " + position.coords.longitude);	
+    "<br>Longitude: " + position.coords.longitude);
+	var positionData = {
+		            latitude: position.coords.latitude,
+		            longitude: position.coords.longitude
+		        };
+ 	$.ajax({
+		    url: 'http://localhost:3000/hospital',
+		    type: 'POST',
+		    contentType: 'application/json',
+		    data: JSON.stringify(positionData),
+		    success: function (res) {
+		    	console.log('yeah!' + res);
+		    },
+		    error: function(err) {
+				console.log(JSON.parse(err.responseText).userMessage);
+		    }
+	});   
 }
 
 $(document).ready(function() {
