@@ -219,9 +219,9 @@ function drawGraph(id){
 		var yMin = dataMin(val);
 		var yMax = dataMax(val) + 5;
 
-		var m = [80, 80, 80, 80]; // margins
-		var w = 500 - m[1] - m[3]; // width
-		var h = 300 - m[0] - m[2]; // height
+		var m = [10, 30, 20, 80]; // margins
+		var w = 490 - m[1] - m[3]; // width
+		var h = 200 - m[0] - m[2]; // height
 
 		var x = d3.scale.linear().domain([0, data.length-1]).range([0, w]);
 		var y = d3.scale.linear().domain([yMin, yMax]).range([h, 0]);
@@ -283,7 +283,7 @@ function redFlag(problem){
 	if (problem == 'spO2') {
 		message += "Oxygen saturation is lower than 91%";
 	}
-	getLocation();
+	//getLocation();
 
 	$("#alert").append(message+', please visit hospital.<br>')
 }
@@ -324,7 +324,11 @@ function getNearestHospital(position) {
 		    contentType: 'application/json',
 		    data: JSON.stringify(positionData),
 		    success: function (res) {
-		    	console.log('yeah!' + res);
+		    	console.log('yeah!' + res.name + JSON.stringify(res));
+		    	var img_url = 'https://maps.googleapis.com/maps/api/staticmap?center='+res.lat+','+res.lng+'&zoom=13&size=2000x300&maptype=roadmap&markers=color:red%7Clabel:C%7C'+res.lat+','+res.lng
+		    	$("#map").append("<img src='" + img_url + "'>");
+		    	$("#hospital_name").html('<b>'+res.name+'</b>');
+		    	$("#hospital_address").append(res.formatted_address)
 		    },
 		    error: function(err) {
 				console.log(JSON.parse(err.responseText).userMessage);
