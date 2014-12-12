@@ -16,4 +16,4 @@
 # Using secret_token for rails3 compatibility. Change to secret_key_base
 # to avoid deprecation warning.
 # Can be safely removed in a rails3 api-only application.
-Nearesthospital::Application.config.secret_token = 'd90ee2b7cdb92d7f44f7e7e10a9359ee72a86802f2333cfb705e27c489cca6be6e301e5d748b7cfbd91e5be2ef42f1f01c4254c80d3a316a1c95a6e1c57653f8'
+Nearesthospital::Application.config.secret_token = 'f79d5e1d05b9e0fa64883439813a8cd90cb82f0bfa3d8a7b99cb4c539adcf14e1451214903cc541ce39543f31cbe874949b392f11fbb8ab8636960774a69f680'
