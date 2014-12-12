@@ -216,6 +216,8 @@ function drawGraph(id){
 	preberiMeritveVitalnihZnakov(id).then(function(val) {
 		var data = val;
 
+		$('#'+id+'_head_num').append(getLastNum(data));
+
 		var yMin = dataMin(val);
 		var yMax = dataMax(val) + 5;
 
@@ -257,6 +259,10 @@ function drawGraph(id){
 	}, function(error) {
 		console.log(error.message);
 	});
+}
+
+function getLastNum(data){
+	return data[data.length-1];
 }
 
 function dataMax(val){
