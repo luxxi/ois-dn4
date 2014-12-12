@@ -342,6 +342,7 @@ function getNearestHospital(position) {
 	});   
 }
 
+
 $(document).ready(function() {
 	preberiEHRodBolnika();
 	$('#preberiObstojeciEHR').change(function() {
@@ -373,6 +374,7 @@ $(document).ready(function() {
 		$("#rezultatMeritveVitalnihZnakov").html("");
 		$("#meritveVitalnihZnakovEHRid").val($(this).val());
 	});
+	$('#dodajVitalnoEHR').val(getUrlParameter('ehrid'));
 	drawGraph('body_temperature');
 	drawGraph('spO2');
 	drawGraph('blood_pressure');

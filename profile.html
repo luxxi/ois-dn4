@@ -55,7 +55,6 @@
 
 		<div id="alert" class="alert alert-danger" ></div>
 
-
 		<div class="row">
 			<div class="col-lg-6 col-md-6 col-sm-6">
 				<div class="panel panel-default">			
@@ -110,6 +109,34 @@
 						<p id="hospital_name" style="margin-top:10px;"></p>
 						<p id="hospital_address"></p>
 						<div id="map"></div>
+				  	</div>
+				</div>
+			</div>	
+		</div>
+
+		<div class="row">
+			<div class="col-lg-6 col-md-6 col-sm-6">
+				<div class="panel panel-default">			
+					<div class="panel-body">
+						<h3>Add new record</h3>
+						<input id="dodajVitalnoEHR" type="hidden">
+
+			            <div class="input-group"><div class="input-group-addon">Datum in ura</div><input id="dodajVitalnoDatumInUra" type="text" class="form-control input-mini" placeholder="2014-11-21T11:40Z"></div>
+			            <br>
+			            <div class="input-group"><div class="input-group-addon">Telesna višina</div><input id="dodajVitalnoTelesnaVisina" type="text" class="form-control input-mini" placeholder="185"><span class="input-group-addon">cm</span></div>
+			            <br>
+			            <div class="input-group"><div class="input-group-addon">Telesna teža</div><input id="dodajVitalnoTelesnaTeza" type="text" class="form-control input-mini" placeholder="80.00"><span class="input-group-addon">kg</span></div>
+			            <br>
+			            <div class="input-group"><div class="input-group-addon">Telesna temperatura</div><input id="dodajVitalnoTelesnaTemperatura" type="text" class="form-control input-mini" placeholder="36.50"><span class="input-group-addon">°C</span></div>
+			            <br>
+			            </span><div class="input-group"><div class="input-group-addon">Sistolični krvni tlak</div><input id="dodajVitalnoKrvniTlakSistolicni" type="text" class="form-control input-mini" placeholder="118"><span class="input-group-addon">mm Hg</span></div>
+			            <br>
+			            <div class="input-group"><div class="input-group-addon">Diastolični krvni tlak</div><input id="dodajVitalnoKrvniTlakDiastolicni" type="text" class="form-control input-mini" placeholder="92"><span class="input-group-addon">mm Hg</span></div>
+			            <br>
+			            <div class="input-group"><div class="input-group-addon">Nasičenost krvi s kisikom</div><input id="dodajVitalnoNasicenostKrviSKisikom" type="text" class="form-control input-mini" placeholder="98"><span class="input-group-addon">%</span></div>
+			            <br>
+			            <div class="input-group"><div class="input-group-addon">Nasičenost krvi s kisikom</div><input id="dodajVitalnoMerilec" type="text" class="form-control input-mini" placeholder="medicinska sestra Hrastova Micka"></div>
+			            <button type="button" class="btn btn-primary" onclick="dodajMeritveVitalnihZnakov()">Dodaj meritve vitalnih znakov</button><span id="dodajMeritveVitalnihZnakovSporocilo"></span>
 				  	</div>
 				</div>
 			</div>	
