@@ -113,7 +113,7 @@ function dodajMeritveVitalnihZnakov() {
 	sessionId = getSessionId();
 
 	var ehrId = $("#dodajVitalnoEHR").val();
-	var datumInUra = $("#dodajVitalnoDatumInUra").val();
+	var datumInUra = timeStamp();
 	var telesnaVisina = $("#dodajVitalnoTelesnaVisina").val();
 	var telesnaTeza = $("#dodajVitalnoTelesnaTeza").val();
 	var telesnaTemperatura = $("#dodajVitalnoTelesnaTemperatura").val();
@@ -154,7 +154,7 @@ function dodajMeritveVitalnihZnakov() {
 		    data: JSON.stringify(podatki),
 		    success: function (res) {
 		    	console.log(res.meta.href);
-		        $("#dodajMeritveVitalnihZnakovSporocilo").html("<span class='obvestilo label label-success fade-in'>" + res.meta.href + ".</span>");
+		        $("#dodajMeritveVitalnihZnakovSporocilo").html("<div class='alert alert-success' role='alert'>New record successfully created. Please <a href='#' onclick='window.location.reload()'>refresh </a>site.</div>");
 		    },
 		    error: function(err) {
 		    	$("#dodajMeritveVitalnihZnakovSporocilo").html("<span class='obvestilo label label-danger fade-in'>Napaka '" + JSON.parse(err.responseText).userMessage + "'!");
@@ -183,20 +183,26 @@ function preberiMeritveVitalnihZnakov(id){
 				    	if (res.length > 0) {
 					        for (var i in res) {
 					        	if(tip == 'body_temperature'){
-					        		res[i].temperature < 35 ? redFlag('body_temperature_low') : null
-					        		res[i].temperature > 38.9 ? redFlag('body_temperature_high') : null
-					        		result.push(res[i].temperature);	
+					        		result.push(res[i].temperature);
 					        	} else if (tip == 'spO2'){
-					        		res[i].spO2 < 91 ? redFlag('spO2') : null
 					        		result.push(res[i].spO2);
 					        	} else if (tip == 'blood_pressure'){
-					        		res[i].systolic < 85 ? redFlag('blood_pressure') : null
 					        		result.push(res[i].systolic);
 					        	}  else if (tip == 'pulse'){
-					        		res[i].pulse > 120 ? redFlag('pulse') : null
 					        		result.push(res[i].pulse);
 					        	} 
 						    }
+						    if(tip == 'body_temperature'){
+				        		dataMin(result) < 35 ? redFlag('body_temperature_low') : null
+		        				dataMax(result) > 38.9 ? redFlag('body_temperature_high') : null
+				        	} else if (tip == 'spO2'){
+				        		dataMin(result) < 91 ? redFlag('spO2') : null
+				        	} else if (tip == 'blood_pressure'){
+				        		dataMin(result) < 85 ? redFlag('blood_pressure') : null
+				        	}  else if (tip == 'pulse'){
+				        		dataMax(result) > 120 ? redFlag('pulse') : null
+					        } 
+						    
 						    console.log(tip +" -- "+result);
 						    resolve(result); 
 				    	} else {
@@ -263,7 +269,7 @@ function drawGraph(id){
 }
 
 function getLastNum(data){
-	return data[data.length-1];
+	return data[0];
 }
 
 function dataMax(val){
@@ -290,7 +296,6 @@ function redFlag(problem){
 	if (problem == 'spO2') {
 		message += "Oxygen saturation is lower than 91%";
 	}
-	//getLocation();
 
 	$("#alert").append(message+', please visit hospital.<br>');
 	$("#alert").fadeIn("slow");
@@ -436,6 +441,13 @@ function getDetailData(tip, ehrId){
 	  });
 }
 
+function timeStamp() {
+  var now = new Date();
+  var date = [ now.getFullYear(), now.getMonth() + 1, now.getDate() ];
+  var time = [ now.getHours(), now.getMinutes(), now.getSeconds() ];
+  return date.join("-") + "T" + time.join(":")  + "." + now.getMilliseconds() + "Z";
+}
+
 
 $(document).ready(function() {
 	preberiEHRodBolnika();
@@ -453,15 +465,13 @@ $(document).ready(function() {
 	$('#preberiObstojeciVitalniZnak').change(function() {
 		$("#dodajMeritveVitalnihZnakovSporocilo").html("");
 		var podatki = $(this).val().split("|");
-		$("#dodajVitalnoEHR").val(podatki[0]);
-		$("#dodajVitalnoDatumInUra").val(podatki[1]);
-		$("#dodajVitalnoTelesnaVisina").val(podatki[2]);
-		$("#dodajVitalnoTelesnaTeza").val(podatki[3]);
-		$("#dodajVitalnoTelesnaTemperatura").val(podatki[4]);
-		$("#dodajVitalnoKrvniTlakSistolicni").val(podatki[5]);
-		$("#dodajVitalnoKrvniTlakDiastolicni").val(podatki[6]);
-		$("#dodajVitalnoNasicenostKrviSKisikom").val(podatki[7]);
-		$("#dodajVitalnoMerilec").val(podatki[8]);
+		$("#dodajVitalnoTelesnaVisina").val(podatki[0]);
+		$("#dodajVitalnoTelesnaTeza").val(podatki[1]);
+		$("#dodajVitalnoTelesnaTemperatura").val(podatki[2]);
+		$("#dodajVitalnoKrvniTlakSistolicni").val(podatki[3]);
+		$("#dodajVitalnoKrvniTlakDiastolicni").val(podatki[4]);
+		$("#dodajVitalnoNasicenostKrviSKisikom").val(podatki[5]);
+		$("#dodajVitalnoMerilec").val(podatki[6]);
 	});
 	$('#preberiEhrIdZaVitalneZnake').change(function() {
 		$("#preberiMeritveVitalnihZnakovSporocilo").html("");
