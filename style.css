@@ -30,3 +30,8 @@ path {
   fill: none;
   stroke: #000;
 }
+
+.center{
+  float:none;
+  margin:0 auto;
+}

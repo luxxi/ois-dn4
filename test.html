@@ -5,27 +5,21 @@
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
       <title>OIS dn4</title>
       <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
-      <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
       <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
       <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
       <script src="page.js"></script>
-      <style>
-        body {padding: 10px;}
-        .btn {margin-top: 10px;}
-        .obvestilo {margin-left:10px;}
-        .centering{
-          float:none;
-          margin:0 auto;
-          }
-      </style>
+
+      <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
+      <link href="style.css" rel="stylesheet">
   </head>
   <body>
     <div class="container">
+      <div class="page-header"><h2>Create and view EHR data <small>EhrScape platform</small></h2></div>
       <div class="row">
-        <div class="col-lg-6 col-md-6 col-sm-6 centering">
+        <div class="col-lg-6 col-md-6 col-sm-6 center" style="margin-top:30px;">
           <div class="row" style="min-height: 190px;">
               <div class="col-md-4" style="border-right:solid 1px #d1d1d1; text-align:center;">
-                  <input id="patient1_ehrid" type="text" value="d564c6a3-5a43-4fcc-bfa7-9ac76e9673bd" />
+                  <input id="patient1_ehrid" type="hidden" value="d564c6a3-5a43-4fcc-bfa7-9ac76e9673bd" />
                   <img class="img-circle" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=100" alt="User Pic">
                   <h3><a href="#" id="patient1_ehrid_name" onclick="detail('#patient1_ehrid');"></a></h3>
                   <div id="patient1_ehrid_vital_signs">
@@ -33,11 +27,11 @@
                     Blood pressure: <span id="patient1_ehrid_blood_pressure"></span>mmHg<br>
                     Pulse: <span id="patient1_ehrid_pulse"></span>bpm<br>
                     Oxygen saturation: <span id="patient1_ehrid_spO2"></span>%<br>
-                    <a href="#" class="btn btn-default" role="button" id="patient1_ehrid_more">Več</a>
+                    <a href="#" class="btn btn-default" role="button" id="patient1_ehrid_more">More</a>
                   </div>
               </div>
               <div class="col-md-4" style="border-right:solid 1px #d1d1d1; text-align:center;">
-                  <input id="patient2_ehrid" type="text" value="d564c6a3-5a43-4fcc-bfa7-9ac76e9673bd" />
+                  <input id="patient2_ehrid" type="hidden" value="d564c6a3-5a43-4fcc-bfa7-9ac76e9673bd" />
                   <img class="img-circle" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=100" alt="User Pic">
                   <h3><a href="#" id="patient2_ehrid_name" onclick="detail('#patient2_ehrid');"></a></h3>
                   <div id="patient2_ehrid_vital_signs">
@@ -45,11 +39,11 @@
                     Blood pressure: <span id="patient2_ehrid_blood_pressure"></span>mmHg<br>
                     Pulse: <span id="patient2_ehrid_pulse"></span>bpm<br>
                     Oxygen saturation: <span id="patient2_ehrid_spO2"></span>%<br>
-                    <a href="#" class="btn btn-default" role="button" id="patient2_ehrid_more">Več</a>
+                    <a href="#" class="btn btn-default" role="button" id="patient2_ehrid_more">More</a>
                   </div>
               </div>
-              <div class="col-md-4" style="border-right:solid 1px #d1d1d1; text-align:center;">
-                  <input id="patient3_ehrid" type="text" value="d564c6a3-5a43-4fcc-bfa7-9ac76e9673bd" />
+              <div class="col-md-4" style="text-align:center;">
+                  <input id="patient3_ehrid" type="hidden" value="d564c6a3-5a43-4fcc-bfa7-9ac76e9673bd" />
                   <img class="img-circle" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=100" alt="User Pic">
                   <h3><a href="#" id="patient3_ehrid_name" onclick="detail('#patient3_ehrid');"></a></h3>
                   <div id="patient3_ehrid_vital_signs">
@@ -57,34 +51,34 @@
                     Blood pressure: <span id="patient3_ehrid_blood_pressure"></span>mmHg<br>
                     Pulse: <span id="patient3_ehrid_pulse"></span>bpm<br>
                     Oxygen saturation: <span id="patient3_ehrid_spO2"></span>%<br>
-                    <a href="#" class="btn btn-default" role="button" id="patient3_ehrid_more">Več</a>
+                    <a href="#" class="btn btn-default" role="button" id="patient3_ehrid_more">More</a>
                   </div>
               </div>            
           </div>
         </div>
       </div>
-
     </div>
-    <div>
-      <a href="profile.html?ehrid=d564c6a3-5a43-4fcc-bfa7-9ac76e9673bd">Pujsa pepa</a>
-    </div>
-    <div class="page-header"><h2>Vnos in poizvedovanje po EHR podatkih <small>EhrScape platforma</small></h2></div>
-    <div class="row">
-      <div class="col-lg-6 col-md-6 col-sm-6">
+    
+    
+    <div class="row" style="margin-top:60px;">
+      <div class="col-lg-6 col-md-6 col-sm-6 center">
         <div class="panel panel-default">
           <div class="panel-heading">
             <div class="row">
-              <div class="col-lg-8 col-md-8 col-sm-8"><b>Kreiraj EHR zapis</b> za novega bolnika</div>
+              <div class="col-lg-8 col-md-8 col-sm-8"><b>Create an EHR record </b> for a new patient</div>
               <div class="col-lg-4 col-md-4 col-sm-4"><select class="form-control input-sm" id="preberiPredlogoBolnika"><option value=""></option><option value="Pujsa,Pepa,1938-10-30T14:58">Pujsa Pepa</option></select></div>
             </div>
           </div>
           <div class="panel-body">
-            <span class="label label-default">Ime</span><input id="kreirajIme" type="text" class="form-control input-mini" placeholder="Osama">
-            <span class="label label-default">Priimek</span><input id="kreirajPriimek" type="text" class="form-control" placeholder="Bin Laden">
-            <span class="label label-default">Datum rojstva</span><input id="kreirajDatumRojstva" type="text" class="form-control" placeholder="1957-03-10T09:08">
-            <button type="button" class="btn btn-primary btn-xs" onclick="kreirajEHRzaBolnika()">Dodaj osnovne podatke o bolniku</button><span id="kreirajSporocilo"></span>
-            </div>
+            <div class="input-group"><div class="input-group-addon">Name</div><input id="kreirajIme" type="text" class="form-control input-mini" placeholder="Osama"></div>
+            <br>
+            <div class="input-group"><div class="input-group-addon">Lastname</div><input id="kreirajPriimek" type="text" class="form-control" placeholder="Bin Laden"></div>
+            <br>
+            <div class="input-group"><div class="input-group-addon">Date of birth</div><input id="kreirajDatumRojstva" type="text" class="form-control" placeholder="1957-03-10T09:08"></div>
+            <button type="button" class="btn btn-primary" onclick="kreirajEHRzaBolnika()">Add patient</button>
+          </div>
         </div>
+        <div class="alert alert-success" role="alert" id="kreirajSporocilo"></div>
       </div>
     
       </div>

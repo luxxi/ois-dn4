@@ -47,7 +47,8 @@ function kreirajEHRzaBolnika() {
 		            data: JSON.stringify(partyData),
 		            success: function (party) {
 		                if (party.action == 'CREATE') {
-		                    $("#kreirajSporocilo").html("<span class='obvestilo label label-success fade-in'>Uspešno kreiran EHR '" + ehrId + "'.</span>");
+		                    $("#kreirajSporocilo").append("New patient with ehrId: "+ehrId+" successfully created. <br><strong><a href='profile.html?ehrid="+ehrId+"'>Go to profile</a><strong>");
+		                    $("#kreirajSporocilo").fadeIn("slow");
 		                    console.log("Uspešno kreiran EHR '" + ehrId + "'.");
 		                    $("#preberiEHRid").val(ehrId);
 		                }
@@ -291,7 +292,8 @@ function redFlag(problem){
 	}
 	//getLocation();
 
-	$("#alert").append(message+', please visit hospital.<br>')
+	$("#alert").append(message+', please visit hospital.<br>');
+	$("#alert").fadeIn("slow");
 }
 
 function showLocationError(error) {
@@ -474,6 +476,8 @@ $(document).ready(function() {
 	$('#patient1_ehrid_vital_signs').hide();
 	$('#patient2_ehrid_vital_signs').hide();
 	$('#patient3_ehrid_vital_signs').hide();
+	$('#kreirajSporocilo').hide();
+	$("#alert").hide();
 	
 	if ($('#patient1_ehrid').length > 0) {
     	master('#patient1_ehrid');
