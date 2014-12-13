@@ -13,9 +13,58 @@
         body {padding: 10px;}
         .btn {margin-top: 10px;}
         .obvestilo {margin-left:10px;}
+        .centering{
+          float:none;
+          margin:0 auto;
+          }
       </style>
   </head>
   <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6 centering">
+          <div class="row" style="min-height: 190px;">
+              <div class="col-md-4" style="border-right:solid 1px #d1d1d1; text-align:center;">
+                  <input id="patient1_ehrid" type="text" value="d564c6a3-5a43-4fcc-bfa7-9ac76e9673bd" />
+                  <img class="img-circle" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=100" alt="User Pic">
+                  <h3><a href="#" id="patient1_ehrid_name" onclick="detail('#patient1_ehrid');"></a></h3>
+                  <div id="patient1_ehrid_vital_signs">
+                    Temperature: <span id="patient1_ehrid_body_temperature"></span>◦C<br>
+                    Blood pressure: <span id="patient1_ehrid_blood_pressure"></span>mmHg<br>
+                    Pulse: <span id="patient1_ehrid_pulse"></span>bpm<br>
+                    Oxygen saturation: <span id="patient1_ehrid_spO2"></span>%<br>
+                    <a href="#" class="btn btn-default" role="button" id="patient1_ehrid_more">Več</a>
+                  </div>
+              </div>
+              <div class="col-md-4" style="border-right:solid 1px #d1d1d1; text-align:center;">
+                  <input id="patient2_ehrid" type="text" value="d564c6a3-5a43-4fcc-bfa7-9ac76e9673bd" />
+                  <img class="img-circle" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=100" alt="User Pic">
+                  <h3><a href="#" id="patient2_ehrid_name" onclick="detail('#patient2_ehrid');"></a></h3>
+                  <div id="patient2_ehrid_vital_signs">
+                    Temperature: <span id="patient2_ehrid_body_temperature"></span>◦C<br>
+                    Blood pressure: <span id="patient2_ehrid_blood_pressure"></span>mmHg<br>
+                    Pulse: <span id="patient2_ehrid_pulse"></span>bpm<br>
+                    Oxygen saturation: <span id="patient2_ehrid_spO2"></span>%<br>
+                    <a href="#" class="btn btn-default" role="button" id="patient2_ehrid_more">Več</a>
+                  </div>
+              </div>
+              <div class="col-md-4" style="border-right:solid 1px #d1d1d1; text-align:center;">
+                  <input id="patient3_ehrid" type="text" value="d564c6a3-5a43-4fcc-bfa7-9ac76e9673bd" />
+                  <img class="img-circle" src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=100" alt="User Pic">
+                  <h3><a href="#" id="patient3_ehrid_name" onclick="detail('#patient3_ehrid');"></a></h3>
+                  <div id="patient3_ehrid_vital_signs">
+                    Temperature: <span id="patient3_ehrid_body_temperature"></span>◦C<br>
+                    Blood pressure: <span id="patient3_ehrid_blood_pressure"></span>mmHg<br>
+                    Pulse: <span id="patient3_ehrid_pulse"></span>bpm<br>
+                    Oxygen saturation: <span id="patient3_ehrid_spO2"></span>%<br>
+                    <a href="#" class="btn btn-default" role="button" id="patient3_ehrid_more">Več</a>
+                  </div>
+              </div>            
+          </div>
+        </div>
+      </div>
+
+    </div>
     <div>
       <a href="profile.html?ehrid=d564c6a3-5a43-4fcc-bfa7-9ac76e9673bd">Pujsa pepa</a>
     </div>
@@ -37,61 +86,11 @@
             </div>
         </div>
       </div>
-      <div class="col-lg-6 col-md-6 col-sm-6">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <div class="row">
-              <div class="col-lg-8 col-md-8 col-sm-8"><b>Preberi EHR zapis</b> obstoječega bolnika</div>
-              <div class="col-lg-4 col-md-4 col-sm-4"><select class="form-control input-sm" id="preberiObstojeciEHR"><option value=""></option><option value="254f791d-2e7c-49d9-b646-376f62d6ead5">Dejan Lavbič</option><option value="d564c6a3-5a43-4fcc-bfa7-9ac76e9673bd">Pujsa Pepa</option><option value="b931580f-2b05-488b-985b-8d9ffb08ad02">Ata Smrk</option></select></div>
-            </div>
-          </div>
-          <div class="panel-body">
-            <span class="label label-default">EHR ID</span><input id="preberiEHRid" type="text" class="form-control input-mini" placeholder="7b661e12-3a98-21ad-c29e-2dc9f5a3d885">
-            <button type="button" class="btn btn-primary btn-xs" onclick="preberiEHRodBolnika()">Preberi osnovne podatke o bolniku</button><span id="preberiSporocilo"></span>
-            </div>
-        </div>
+    
       </div>
     </div>
-    <div class="row">
-      <div class="col-lg-6 col-md-6 col-sm-6">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <div class="row">
-              <div class="col-lg-8 col-md-8 col-sm-8"><b>Vnos</b> meritve <b>vitalnih znakov</b> bolnika</div>
-              <div class="col-lg-4 col-md-4 col-sm-4"><select class="form-control input-sm" id="preberiObstojeciVitalniZnak"><option value=""></option><option value="b931580f-2b05-488b-985b-8d9ffb08ad02|2014-11-21T11:40Z|185|80.0|36.50|118|92|98|medicinska sestra Smrketa">Ata Smrk</option></select></div>
-            </div>
-          </div>        
-          <div class="panel-body">
-            <span class="label label-default">EHR ID</span><input id="dodajVitalnoEHR" type="text" class="form-control input-mini" placeholder="7b661e12-3a98-21ad-c29e-2dc9f5a3d885">
-            <span class="label label-default">Datum in ura</span><input id="dodajVitalnoDatumInUra" type="text" class="form-control input-mini" placeholder="2014-11-21T11:40Z">
-            <span class="label label-default">Telesna višina</span><div class="input-group"><input id="dodajVitalnoTelesnaVisina" type="text" class="form-control input-mini" placeholder="185"><span class="input-group-addon">cm</span></div>
-            <span class="label label-default">Telesna teža</span><div class="input-group"><input id="dodajVitalnoTelesnaTeza" type="text" class="form-control input-mini" placeholder="80.00"><span class="input-group-addon">kg</span></div>
-            <span class="label label-default">Telesna temperatura</span><div class="input-group"><input id="dodajVitalnoTelesnaTemperatura" type="text" class="form-control input-mini" placeholder="36.50"><span class="input-group-addon">°C</span></div>
-            <span class="label label-default">Sistolični krvni tlak</span><div class="input-group"><input id="dodajVitalnoKrvniTlakSistolicni" type="text" class="form-control input-mini" placeholder="118"><span class="input-group-addon">mm Hg</span></div>
-            <span class="label label-default">Diastolični krvni tlak</span><div class="input-group"><input id="dodajVitalnoKrvniTlakDiastolicni" type="text" class="form-control input-mini" placeholder="92"><span class="input-group-addon">mm Hg</span></div>
-            <span class="label label-default">Nasičenost krvi s kisikom</span><div class="input-group"><input id="dodajVitalnoNasicenostKrviSKisikom" type="text" class="form-control input-mini" placeholder="98"><span class="input-group-addon">%</span></div>
-            <span class="label label-default">Merilec</span><input id="dodajVitalnoMerilec" type="text" class="form-control input-mini" placeholder="medicinska sestra Hrastova Micka">
-            <button type="button" class="btn btn-primary btn-xs" onclick="dodajMeritveVitalnihZnakov()">Dodaj meritve vitalnih znakov</button><span id="dodajMeritveVitalnihZnakovSporocilo"></span>
-            </div>
-        </div>
-      </div>  
-      <div class="col-lg-6 col-md-6 col-sm-6">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <div class="row">
-              <div class="col-lg-6 col-md-6 col-sm-6"><b>Pregled</b> meritev <b>vitalnih znakov</b> bolnika</div>
-              <div class="col-lg-3 col-md-3 col-sm-3"><select class="form-control input-sm" id="preberiTipZaVitalneZnake"><option value="telesna temperatura">telesna temperatura</option><option value="telesna temperatura AQL">telesna temperatura (filter na podhladitev)</option><option value="telesna teža">telesna teža</option></select></div>
-              <div class="col-lg-3 col-md-3 col-sm-3"><select class="form-control input-sm" id="preberiEhrIdZaVitalneZnake"><option value=""></option><option value="b931580f-2b05-488b-985b-8d9ffb08ad02">Ata Smrk</option><option value="d564c6a3-5a43-4fcc-bfa7-9ac76e9673bd">Pujsa Pepa</option></select></div>
-            </div>
-          </div>        
-          <div class="panel-body">
-            <span class="label label-default">EHR ID</span><input id="meritveVitalnihZnakovEHRid" type="text" class="form-control input-mini" placeholder="7b661e12-3a98-21ad-c29e-2dc9f5a3d885">
-            <button type="button" class="btn btn-primary btn-xs" onclick="preberiMeritveVitalnihZnakov('telesna temperatura')">Preberi meritve vitalnih znakov</button><span id="preberiMeritveVitalnihZnakovSporocilo"></span>
-            <div id="rezultatMeritveVitalnihZnakov"></div>
-            </div>
-        </div>      
-      </div>
+
     </div>
-    <div>gh-pages test</div>
+
   </body>
 </html>

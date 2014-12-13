@@ -342,6 +342,98 @@ function getNearestHospital(position) {
 	});   
 }
 
+function master(name){
+	var ehrId = $(name).val();
+
+	$.ajax({
+		url: baseUrl + "/demographics/ehr/" + ehrId + "/party",
+		type: 'GET',
+		headers: {"Ehr-Session": sessionId},
+    	success: function (data) {
+			var party = data.party;
+			console.log(party.firstNames + " " + party.lastNames);
+			$(name + '_name').append(party.firstNames + " " + party.lastNames);
+		},
+		error: function(err) {
+			console.log(JSON.parse(err.responseText).userMessage);
+		}
+	});
+	//don't work with $
+	document.getElementById(name.substring(1) + "_more").href = "profile.html?ehrid="+ehrId;
+}
+
+function detail(name){
+	var ehrId = $(name).val();
+	
+	getDetailData('body_temperature', ehrId).then(function(val) {
+		if ($(name + '_body_temperature').text() == '')
+			$(name + '_body_temperature').append(val);
+	}, function(error) {
+		console.log(error.message);
+	});
+
+	getDetailData('blood_pressure', ehrId).then(function(val) {
+		if ($(name + '_blood_pressure').text() == '')
+			$(name + '_blood_pressure').append(val);
+	}, function(error) {
+		console.log(error.message);
+	});
+
+	getDetailData('pulse', ehrId).then(function(val) {
+		if ($(name + '_pulse').text() == '')
+			$(name + '_pulse').append(val);
+	}, function(error) {
+		console.log(error.message);
+	});
+
+	getDetailData('spO2', ehrId).then(function(val) {
+		if ($(name + '_spO2').text() == '')
+			$(name + '_spO2').append(val);
+	}, function(error) {
+		console.log(error.message);
+	});
+	$(name + '_vital_signs').fadeIn("slow");
+}
+
+function getDetailData(tip, ehrId){ 
+	  return new Promise(function(resolve, reject) {
+	  		sessionId = getSessionId();	
+			var result = [];
+
+			if (!ehrId || ehrId.trim().length == 0) {
+				$("#preberiMeritveVitalnihZnakovSporocilo").html("<span class='obvestilo label label-warning fade-in'>Prosim vnesite zahtevan podatek!");
+			} else {
+				$.ajax({
+				    url: baseUrl + "/view/" + ehrId + "/" + tip,
+				    type: 'GET',
+				    headers: {"Ehr-Session": sessionId},
+				    success: function (res) {
+				    	if (res.length > 0) {
+					        for (var i in res) {
+					        	if(tip == 'body_temperature'){
+					        		result.push(res[i].temperature);	
+					        	} else if (tip == 'spO2'){
+					        		result.push(res[i].spO2);
+					        	} else if (tip == 'blood_pressure'){
+					        		result.push(res[i].systolic);
+					        	}  else if (tip == 'pulse'){
+					        		result.push(res[i].pulse);
+					        	} 
+						    }
+						    resolve(result[i]); 
+				    	} else {
+				    		console.log('Ni podatkov!');
+				    	}
+				    },
+				    error: function() {
+						console.log(JSON.parse(err.responseText).userMessage);
+						reject(Error([0,0]));
+				    }
+				});
+			}
+	  });
+}
+
 
 $(document).ready(function() {
 	preberiEHRodBolnika();
@@ -379,4 +471,15 @@ $(document).ready(function() {
 	drawGraph('spO2');
 	drawGraph('blood_pressure');
 	drawGraph('pulse');
+	$('#patient1_ehrid_vital_signs').hide();
+	$('#patient2_ehrid_vital_signs').hide();
+	$('#patient3_ehrid_vital_signs').hide();
+	
+	if ($('#patient1_ehrid').length > 0) {
+    	master('#patient1_ehrid');
+		console.log('SE IZVEDE');
+		master('#patient2_ehrid');
+		master('#patient3_ehrid');
+    }
+		
 });
