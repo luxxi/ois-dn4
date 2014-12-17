@@ -5,7 +5,7 @@ class HospitalsController < ApplicationController
     latitude = params[:latitude]
 
 
-    @client = GooglePlaces::Client.new('AIzaSyApbnzTuBmeiKDZO5rL8GLdc0aGfKvoTDk')
+    @client = GooglePlaces::Client.new(ENV['googleplaces'])
     #@hospitals = @client.spots(46.34301147317693, 15.16968383447963, types: 'hospital', radius: 100000)
     @hospitals = @client.spots_by_query("Hospital near #{latitude}, #{longitude}", :types => 'hospital').first
     #@hospitals = JSON.parse(file)
@@ -20,5 +20,10 @@ class HospitalsController < ApplicationController
     logger.info "hos add #{@hospitals['formatted_address']}"
 
     render json: @hospitals
+  end
+
+  def mail
+    logger.info "#{params[:mail]} lalal"
+    Alert.alert_notification(params[:mail], params[:message]).deliver
   end
 end

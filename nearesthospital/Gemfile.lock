@@ -30,6 +30,8 @@ GEM
     arel (5.0.1.20140414130214)
     builder (3.2.2)
     erubis (2.7.0)
+    figaro (1.0.0)
+      thor (~> 0.14)
     google_places (0.27.0)
       httparty (~> 0.13.1)
     hike (1.2.3)
@@ -87,6 +89,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  figaro
   google_places
   rails (= 4.1.8)
   rails-api

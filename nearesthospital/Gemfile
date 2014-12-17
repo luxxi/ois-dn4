@@ -11,6 +11,8 @@ gem 'sqlite3'
 
 gem 'google_places'
 
+gem 'figaro'
+
 
 
 # To use ActiveModel has_secure_password
