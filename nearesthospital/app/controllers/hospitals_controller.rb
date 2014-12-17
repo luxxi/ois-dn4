@@ -4,7 +4,6 @@ class HospitalsController < ApplicationController
     longitude = params[:longitude]
     latitude = params[:latitude]
 
-
     @client = GooglePlaces::Client.new(ENV['googleplaces'])
     #@hospitals = @client.spots(46.34301147317693, 15.16968383447963, types: 'hospital', radius: 100000)
     @hospitals = @client.spots_by_query("Hospital near #{latitude}, #{longitude}", :types => 'hospital').first
