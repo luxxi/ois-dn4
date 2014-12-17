@@ -22,6 +22,7 @@ function kreirajEHRzaBolnika() {
 	var ime = $("#kreirajIme").val();
 	var priimek = $("#kreirajPriimek").val();
 	var datumRojstva = $("#kreirajDatumRojstva").val();
+	var email = $("#kreirajMail").val();
 
 	if (!ime || !priimek || !datumRojstva || ime.trim().length == 0 || priimek.trim().length == 0 || datumRojstva.trim().length == 0) {
 		$("#kreirajSporocilo").html("<span class='obvestilo label label-warning fade-in'>Prosim vnesite zahtevane podatke!</span>");
@@ -38,7 +39,9 @@ function kreirajEHRzaBolnika() {
 		            firstNames: ime,
 		            lastNames: priimek,
 		            dateOfBirth: datumRojstva,
-		            partyAdditionalInfo: [{key: "ehrId", value: ehrId}]
+		            partyAdditionalInfo: [
+		            	{key: "ehrId", value: ehrId},
+		            	{key: "email", value: email}]
 		        };
 		        $.ajax({
 		            url: baseUrl + "/demographics/party",
@@ -78,8 +81,10 @@ function preberiEHRodBolnika() {
 			headers: {"Ehr-Session": sessionId},
 	    	success: function (data) {
 				var party = data.party;
+				console.log(JSON.stringify(party));
 				$("#name").text(party.firstNames + " " + party.lastNames);
 				$("#age").text(to_age(party.dateOfBirth));
+				$("#mail").text(party.partyAdditionalInfo[1].value);
 				console.log("Bolnik '" + party.firstNames + " " + party.lastNames + "', ki se je rodil '" + party.dateOfBirth + "'.");
 			},
 			error: function(err) {
@@ -122,6 +127,8 @@ function dodajMeritveVitalnihZnakov() {
 	var nasicenostKrviSKisikom = $("#dodajVitalnoNasicenostKrviSKisikom").val();
 	var pulse = $("#dodajVitalnoPulse").val();
 	var merilec = $("#dodajVitalnoMerilec").val();
+
+	console.log('-prebrani podatki'+pulse);
 
 	if (!ehrId || ehrId.trim().length == 0) {
 		$("#dodajMeritveVitalnihZnakovSporocilo").html("<span class='obvestilo label label-warning fade-in'>Prosim vnesite zahtevane podatke!</span>");
@@ -167,57 +174,78 @@ function dodajMeritveVitalnihZnakov() {
 }
 
 function preberiMeritveVitalnihZnakov(id){ 
-	  return new Promise(function(resolve, reject) {
-	  		sessionId = getSessionId();	
+	return new Promise(function(resolve, reject) {
+  		sessionId = getSessionId();	
 
-			var ehrId = getUrlParameter('ehrid');
-			var result = [];
-			var tip = id;
+		var ehrId = getUrlParameter('ehrid');
+		var result = [];
+		var tip = id;
 
-			if (!ehrId || ehrId.trim().length == 0) {
-				$("#preberiMeritveVitalnihZnakovSporocilo").html("<span class='obvestilo label label-warning fade-in'>Prosim vnesite zahtevan podatek!");
-			} else {
-				$.ajax({
-				    url: baseUrl + "/view/" + ehrId + "/" + tip,
-				    type: 'GET',
-				    headers: {"Ehr-Session": sessionId},
-				    success: function (res) {
-				    	if (res.length > 0) {
-					        for (var i in res) {
-					        	if(tip == 'body_temperature'){
-					        		result.push(res[i].temperature);
-					        	} else if (tip == 'spO2'){
-					        		result.push(res[i].spO2);
-					        	} else if (tip == 'blood_pressure'){
-					        		result.push(res[i].systolic);
-					        	}  else if (tip == 'pulse'){
-					        		result.push(res[i].pulse);
-					        	} 
-						    }
-						    if(tip == 'body_temperature'){
-				        		dataMin(result) < 35 ? redFlag('body_temperature_low') : null
-		        				dataMax(result) > 38.9 ? redFlag('body_temperature_high') : null
-				        	} else if (tip == 'spO2'){
-				        		dataMin(result) < 91 ? redFlag('spO2') : null
-				        	} else if (tip == 'blood_pressure'){
-				        		dataMin(result) < 85 ? redFlag('blood_pressure') : null
-				        	}  else if (tip == 'pulse'){
-				        		dataMax(result) > 120 ? redFlag('pulse') : null
-					        } 
-						    
-						    console.log(tip +" -- "+result);
-						    resolve(result.reverse()); 
-				    	} else {
-				    		console.log('Ni podatkov!');
-				    	}
-				    },
-				    error: function() {
-						console.log(JSON.parse(err.responseText).userMessage);
-						reject(Error([0,0]));
-				    }
-				});
+		if (!ehrId || ehrId.trim().length == 0) {
+			$("#preberiMeritveVitalnihZnakovSporocilo").html("<span class='obvestilo label label-warning fade-in'>Prosim vnesite zahtevan podatek!");
+		} else {
+			var select;
+			var contains;
+
+			if(tip == 'body_temperature'){
+				select = " a/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value/magnitude as temperature ";
+				contains = "body_temperature";
+			} else if (tip == 'spO2'){
+				select = " a/data[at0001]/events[at0002]/data[at0003]/items[at0006]/value/numerator as spO2 "; 
+				contains = "indirect_oximetry";   		
+			} else if (tip == 'blood_pressure'){
+				select = " a/data[at0001]/events[at0006]/data[at0003]/items[at0004]/value/magnitude as systolic ";
+				contains = "blood_pressure";
+			} else if (tip == 'pulse'){
+				select = " a/data[at0002]/events[at0003]/data[at0001]/items[at0004]/value/magnitude as pulse ";
+				contains = "heart_rate-pulse";
 			}
-	  });
+				        		
+
+			var aql = "select " + select + 
+						"from EHR e[e/ehr_id/value='" + ehrId + "'] " +
+						"contains OBSERVATION a[openEHR-EHR-OBSERVATION." + contains + ".v1];";
+
+			$.ajax({
+			    url: baseUrl + "/query?" + $.param({"aql": aql}),
+			    type: 'GET',
+			    headers: {"Ehr-Session": sessionId},
+			    success: function (res) {
+			        var rows = res.resultSet;
+			        if (rows.length > 0) {
+				        for (var i in rows) {
+					        if(tip == 'body_temperature')
+				        		result.push(rows[i].temperature);
+				        	else if (tip == 'spO2')
+				        		result.push(rows[i].spO2);
+				        	else if (tip == 'blood_pressure')
+				        		result.push(rows[i].systolic);
+				        	else if (tip == 'pulse')
+				        		result.push(rows[i].pulse);    	
+						}
+						if(tip == 'body_temperature'){
+				        		dataMin(result) < 35 ? redFlag('body_temperature_low', ehrId) : null
+		        				dataMax(result) > 38.9 ? redFlag('body_temperature_high', ehrId) : null
+				        } else if (tip == 'spO2')
+				        		dataMin(result) < 91 ? redFlag('spO2', ehrId) : null
+				        else if (tip == 'blood_pressure')
+				        		dataMin(result) < 85 ? redFlag('blood_pressure', ehrId) : null
+				        else if (tip == 'pulse')
+				        		dataMax(result) > 120 ? redFlag('pulse', ehrId) : null
+					    						    
+					    console.log(tip +" -- "+result);
+					    resolve(result);          
+				    }else{
+				    	console.log('ni podatkov');
+				    }
+			    },
+			    error: function() {
+					console.log(JSON.parse(err.responseText).userMessage);
+					reject(Error([0,0]));
+			    }
+			});
+		}
+	});
 }	 
 
 function drawGraph(id){
@@ -271,7 +299,7 @@ function drawGraph(id){
 }
 
 function getLastNum(data){
-	return data[0];
+	return data[data.length-1];
 }
 
 function dataMax(val){
@@ -281,7 +309,7 @@ function dataMin(val){
 	return Math.min.apply(Math, val);
 }
 
-function redFlag(problem){
+function redFlag(problem, ehrId){
 	var message = $("#alert").val();
 	if (problem == 'blood_pressure') {
 		message += "Blood pressure is lower than 85mmHg";
@@ -301,6 +329,8 @@ function redFlag(problem){
 
 	$("#alert").append(message+', please visit hospital.<br>');
 	$("#alert").fadeIn("slow");
+
+	sendMail(ehrId, message);
 }
 
 function showLocationError(error) {
@@ -450,6 +480,40 @@ function timeStamp() {
   return date.join("-") + "T" + time.join(":")  + "." + now.getMilliseconds() + "Z";
 }
 
+function sendMail(ehrId, message){
+	sessionId = getSessionId();
+
+	var ehrId = getUrlParameter('ehrid');
+
+	if (!ehrId || ehrId.trim().length == 0) {
+		$("#preberiSporocilo").html("<span class='obvestilo label label-warning fade-in'>Prosim vnesite zahtevan podatek!");
+	} else {
+		$.ajax({
+			url: baseUrl + "/demographics/ehr/" + ehrId + "/party",
+			type: 'GET',
+			headers: {"Ehr-Session": sessionId},
+	    	success: function (data) {
+				var party = data.party;
+				$.ajax({
+					    url: 'http://localhost:3000/mail',
+					    type: 'POST',
+					    contentType: 'application/json',
+					    data: JSON.stringify({"mail" : party.partyAdditionalInfo[1].value, "message" : message}),
+					    success: function (res) {
+					    	console.log(party.partyAdditionalInfo[1].value + " - " + res);
+					    },
+					    error: function(err) {
+							console.log(JSON.parse(err.responseText).userMessage);
+					    }
+				});
+			},
+			error: function(err) {
+				$("#preberiSporocilo").html("<span class='obvestilo label label-danger fade-in'>Napaka '" + JSON.parse(err.responseText).userMessage + "'!");
+				console.log(JSON.parse(err.responseText).userMessage);
+			}
+		});
+	}	
+}
 
 $(document).ready(function() {
 	preberiEHRodBolnika();
