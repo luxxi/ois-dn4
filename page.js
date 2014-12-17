@@ -39,10 +39,12 @@ function kreirajEHRzaBolnika() {
 		            firstNames: ime,
 		            lastNames: priimek,
 		            dateOfBirth: datumRojstva,
+		            
 		            partyAdditionalInfo: [
 		            	{key: "ehrId", value: ehrId},
 		            	{key: "email", value: email}]
 		        };
+		        console.log(partyData);
 		        $.ajax({
 		            url: baseUrl + "/demographics/party",
 		            type: 'POST',
@@ -66,6 +68,13 @@ function kreirajEHRzaBolnika() {
 	}
 }
 
+function findMail (partyData) {
+	for(var i = 0; i < partyData.partyAdditionalInfo.length; i++) {
+		var el = partyData.partyAdditionalInfo[i];
+		if(el.hasOwnProperty("key") && el.key === "email")
+			return el.value;
+	}
+}
 
 function preberiEHRodBolnika() {
 	sessionId = getSessionId();
@@ -84,7 +93,7 @@ function preberiEHRodBolnika() {
 				console.log(JSON.stringify(party));
 				$("#name").text(party.firstNames + " " + party.lastNames);
 				$("#age").text(to_age(party.dateOfBirth));
-				$("#mail").text(party.partyAdditionalInfo[1].value);
+				$("#mail").text(findMail(party));
 				console.log("Bolnik '" + party.firstNames + " " + party.lastNames + "', ki se je rodil '" + party.dateOfBirth + "'.");
 			},
 			error: function(err) {
@@ -163,7 +172,10 @@ function dodajMeritveVitalnihZnakov() {
 		    data: JSON.stringify(podatki),
 		    success: function (res) {
 		    	console.log(res.meta.href);
-		        $("#dodajMeritveVitalnihZnakovSporocilo").html("<div class='alert alert-success' role='alert'>New record successfully created. Please <a href='#' onclick='window.location.reload()'>refresh </a>site.</div>");
+		    	var seconds = 3, timeout = seconds * 1000;
+		    	setTimeout(function() {location.reload()}, timeout);
+		    	setInterval(function() { $("#refresh-text").text(seconds -= 1);}, 1000);
+		        $("#dodajMeritveVitalnihZnakovSporocilo").html("<div class='alert alert-success' role='alert'>New record successfully created. Please <a href='#' onclick='window.location.reload()'>refreshing </a>site in <span id='refresh-text'>3</span> seconds.</div>");
 		    },
 		    error: function(err) {
 		    	$("#dodajMeritveVitalnihZnakovSporocilo").html("<span class='obvestilo label label-danger fade-in'>Napaka '" + JSON.parse(err.responseText).userMessage + "'!");
@@ -234,7 +246,7 @@ function preberiMeritveVitalnihZnakov(id){
 				        		dataMax(result) > 120 ? redFlag('pulse', ehrId) : null
 					    						    
 					    console.log(tip +" -- "+result);
-					    resolve(result);          
+					    resolve(result.reverse());          
 				    }else{
 				    	console.log('ni podatkov');
 				    }
@@ -494,13 +506,14 @@ function sendMail(ehrId, message){
 			headers: {"Ehr-Session": sessionId},
 	    	success: function (data) {
 				var party = data.party;
+				var mail = findMail(party);
 				$.ajax({
 					    url: 'http://nearesthospital.herokuapp.com/mail',
 					    type: 'POST',
 					    contentType: 'application/json',
-					    data: JSON.stringify({"mail" : party.partyAdditionalInfo[1].value, "message" : message}),
+					    data: JSON.stringify({"mail" : mail, "message" : message}),
 					    success: function (res) {
-					    	console.log(party.partyAdditionalInfo[1].value + " - " + res);
+					    	console.log(mail + " - " + res);
 					    },
 					    error: function(err) {
 							console.log(JSON.parse(err.responseText).userMessage);
