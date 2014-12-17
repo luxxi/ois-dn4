@@ -246,7 +246,7 @@ function preberiMeritveVitalnihZnakov(id){
 				        		dataMax(result) > 120 ? redFlag('pulse', ehrId) : null
 					    						    
 					    console.log(tip +" -- "+result);
-					    resolve(result.reverse());          
+					    resolve(result);          
 				    }else{
 				    	console.log('ni podatkov');
 				    }
