@@ -364,7 +364,7 @@ function getNearestHospital(position) {
 		            longitude: position.coords.longitude
 		        };
  	$.ajax({
-		    url: 'http://localhost:3000/hospital',
+		    url: 'http://nearesthospital.herokuapp.com/hospital',
 		    type: 'POST',
 		    contentType: 'application/json',
 		    data: JSON.stringify(positionData),
@@ -495,7 +495,7 @@ function sendMail(ehrId, message){
 	    	success: function (data) {
 				var party = data.party;
 				$.ajax({
-					    url: 'http://localhost:3000/mail',
+					    url: 'http://nearesthospital.herokuapp.com/mail',
 					    type: 'POST',
 					    contentType: 'application/json',
 					    data: JSON.stringify({"mail" : party.partyAdditionalInfo[1].value, "message" : message}),
